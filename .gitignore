@@ -1,0 +1,40 @@
+# Ignora archivos temporales de React
+.cache/
+.tmp/
+
+# Ignora archivos de configuración específicos del IDE
+.vscode/
+
+# Ignora archivos de configuración de Babel
+.babelrc
+
+# Ignora archivos de configuración de Jest
+jest.config.js
+
+# Ignora archivos de configuración de Node
+.env
+.nvmrc
+
+# Ignora carpetas de node_modules
+node_modules/
+
+# Ignora archivos de logs
+logs/
+
+# Ignora archivos de cobertura de tests
+coverage/
+
+# Ignora archivos de minificación
+dist/
+
+# Ignora archivos de depuración
+.debugger/
+
+# Ignora cualquier archivo que termina en .bak
+*.bak
+
+# Ignora cualquier archivo que termina en .tmp
+*.tmp
+
+# Ignora cualquier archivo que comienza con __
+**/__*
