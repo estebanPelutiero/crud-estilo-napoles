@@ -1,13 +1,17 @@
 import React from "react";
-import { Card, Button, Typography } from "@material-tailwind/react";
+import {
+  Card,
+  Button,
+  Typography,
+} from "@material-tailwind/react";
 
-const Table = ({products}) => {
-
+const Table = ({ products, editProduct, deleteProduct }) => {
+  
   const TABLE_HEAD = ["#", "Categoría", "Nombre", "Descripción", "Precio", " "];
 
   return (
-    <Card className="overflow-y-scroll mx-4 my-8 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.10)]">
-      <table className="w-full min-w-max table-auto text-left rounded-lg">
+    <Card className="overflow-scroll mb-10 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.10)] w-full">
+      <table className="w-full table-auto text-left rounded-lg ">
         <thead>
           <tr>
             {TABLE_HEAD.map((head) => (
@@ -30,7 +34,7 @@ const Table = ({products}) => {
         <tbody>
           {products.map((product, key) => {
             return (
-              <tr key={product.id} className="even:bg-blue-gray-50/50">
+              <tr key={product.id} className="even:bg-blue-gray-50/50 truncate">
                 <td className="p-4">
                   <Typography
                     variant="h6"
@@ -76,9 +80,20 @@ const Table = ({products}) => {
                     $ {product.price}
                   </Typography>
                 </td>
-                <td className="py-4 pl-4">
-                  <Button className="px-4 py-2 text-sm capitalize font-normal">
+                <td className="py-4 pl-4 flex gap-2">
+                  <Button
+                    className="px-4 py-2 text-xs capitalize font-normal"
+                    onClick={() => editProduct(product)}
+                  >
                     Editar
+                  </Button>
+                  <Button
+                    color="red"
+                    onClick={() => deleteProduct(product.id)}
+                    variant="text"
+                    className="px-4 py-2 text-xs capitalize font-normal"
+                  >
+                    Eliminar
                   </Button>
                 </td>
               </tr>

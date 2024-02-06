@@ -1,10 +1,17 @@
 const express = require("express");
 const app = express();
-const mysql = require("mysql");
 const cors = require("cors");
+const mysql = require("mysql");
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173",
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Conexion a base de datos
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -28,7 +35,7 @@ app.post("/create", (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.send("Producto registrado con éxito!");
+        res.send(result);
       }
     }
   );
@@ -44,6 +51,48 @@ app.get("/productos", (req, res) => {
       res.send(result);
     }
   });
+});
+
+// Modificar elementos
+
+app.put("/update", (req, res) => {
+
+  const id = req.body.id;
+  const category = req.body.category;
+  const name = req.body.name;
+  const description = req.body.description;
+  const price = req.body.price;
+
+  db.query(
+    "UPDATE productos SET category=?, name=?, description=?, price=? WHERE id=?",
+    [category, name, description, price, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+// Eliminar un producto
+
+app.delete("/delete:id", (req, res) => {
+
+  const id = req.params.id;
+  
+  db.query(
+    "DELETE FROM productos WHERE id=?",
+    [id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.listen(3001, () => {
