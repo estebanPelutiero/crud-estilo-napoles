@@ -78,13 +78,12 @@ app.put("/update", (req, res) => {
 
 // Eliminar un producto
 
-app.delete("/delete:id", (req, res) => {
+app.delete("/delete/:id", (req, res) => {
 
   const id = req.params.id;
   
   db.query(
-    "DELETE FROM productos WHERE id=?",
-    [id],
+    "DELETE FROM productos WHERE id=?" ,id,
     (err, result) => {
       if (err) {
         console.log(err);

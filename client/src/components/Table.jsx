@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  Card,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import { Card, Button, Typography } from "@material-tailwind/react";
 
 const Table = ({ products, editProduct, deleteProduct }) => {
-  
   const TABLE_HEAD = ["#", "Categoría", "Nombre", "Descripción", "Precio", " "];
 
   return (
@@ -82,15 +77,16 @@ const Table = ({ products, editProduct, deleteProduct }) => {
                 </td>
                 <td className="py-4 pl-4 flex gap-2">
                   <Button
+                    type="button"
                     className="px-4 py-2 text-xs capitalize font-normal"
                     onClick={() => editProduct(product)}
                   >
                     Editar
                   </Button>
                   <Button
+                    type="button"
                     color="red"
-                    onClick={() => deleteProduct(product.id)}
-                    variant="text"
+                    onClick={() => deleteProduct(product)}
                     className="px-4 py-2 text-xs capitalize font-normal"
                   >
                     Eliminar

@@ -19,18 +19,12 @@ const Form = () => {
 
   const add = (e) => {
     e.preventDefault();
-    Axios.post(
-      "http://localhost:3001/create",
-      {
-        category: category,
-        name: name,
-        description: description,
-        price: price,
-      },
-      {
-        timeout: 5000,
-      }
-    )
+    Axios.post("http://localhost:3001/create", {
+      category: category,
+      name: name,
+      description: description,
+      price: price,
+    })
       .then(() => {
         // Luego de guardar la informacion, la renderizamos en pantalla automaticamente
         getProducts();
@@ -38,14 +32,20 @@ const Form = () => {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: `<strong>${name}</strong> agregado`,
+          title: `<strong class="text-[#3085d6]">${name}</strong> agregado`,
           showConfirmButton: true,
           timer: 3000,
         });
       })
       .catch((error) => {
-        console.error("Error adding product:", error);
-        alert("Error al registrar el producto");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text:
+            JSON.parse(JSON.stringify(error)).message === "Network Error"
+              ? "Intente más tarde"
+              : JSON.parse(JSON.stringify(error)).message,
+        });
       });
   };
 
@@ -59,18 +59,29 @@ const Form = () => {
       name: name,
       description: description,
       price: price,
-    }).then(() => {
-      // Luego de guardar la informacion, la renderizamos en pantalla automaticamente
-      getProducts();
-      cleanInputs();
-      Swal.fire({
+    })
+      .then(() => {
+        // Luego de guardar la informacion, la renderizamos en pantalla automaticamente
+        getProducts();
+        cleanInputs();
+        Swal.fire({
           position: "center",
           icon: "success",
-          title: `<strong>${name}</strong> actualizado`,
+          html: `<strong class="text-[#3085d6]">${name}</strong> actualizado`,
           showConfirmButton: true,
           timer: 3000,
         });
-    });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text:
+            JSON.parse(JSON.stringify(error)).message === "Network Error"
+              ? "Intente más tarde"
+              : JSON.parse(JSON.stringify(error)).message,
+        });
+      });
   };
 
   // Editar producto
@@ -106,18 +117,45 @@ const Form = () => {
     setEdit(false);
   };
 
-  const deleteProduct = (id) => {
-    Axios.delete(`http://localhost:3001/delete/${id}`).then(() => {
-      // Luego de guardar la informacion, la renderizamos en pantalla automaticamente
-      getProducts();
-      cleanInputs();
-      Swal.fire({
-          position: "center",
-          icon: "success",
-          title: `<strong>${name}</strong> eliminado`,
-          showConfirmButton: true,
-          timer: 3000,
-        });
+  // Eliminar un producto
+
+  const deleteProduct = (product) => {
+    console.log("1");
+    Swal.fire({
+      title: "Confirmar eliminado",
+      html: `<p>Realmente desea eliminar <span class="text-[#3085d6]"> ${product.name} </span>?</p>`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("llego hasta aqui");
+        Axios.delete(`http://localhost:3001/delete/${product.id}`)
+          .then(() => {
+            getProducts();
+            cleanInputs();
+            Swal.fire({
+              title: "Eliminado!",
+              html: `<span class="text-[#3085d6]">${product.name}</span> fue eliminado.`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text:
+                JSON.parse(JSON.stringify(error)).message === "Network Error"
+                  ? "Intente más tarde"
+                  : JSON.parse(JSON.stringify(error)).message,
+            });
+          });
+      }
     });
   };
 
@@ -217,6 +255,7 @@ const Form = () => {
               {edit ? (
                 <div className="flex gap-4">
                   <Button
+                    type="button"
                     onClick={update}
                     color="blue"
                     className="capitalize text-base"
@@ -224,6 +263,7 @@ const Form = () => {
                     Actualizar
                   </Button>
                   <Button
+                    type="button"
                     onClick={cleanInputs}
                     variant="outlined"
                     color="red"
@@ -234,6 +274,7 @@ const Form = () => {
                 </div>
               ) : (
                 <Button
+                  type="button"
                   onClick={add}
                   className="bg-green-700 capitalize text-base"
                 >
@@ -247,7 +288,11 @@ const Form = () => {
 
       {/* TABLA */}
 
-      <Table products={products} editProduct={editProduct} deleteProduct={deleteProduct} />
+      <Table
+        products={products}
+        editProduct={editProduct}
+        deleteProduct={deleteProduct}
+      />
     </>
   );
 };
